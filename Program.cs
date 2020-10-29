@@ -23,6 +23,7 @@ namespace console_bullet_hell
         {
             while (true)
             {
+                Console.Title = "Console Bullet Hell owo";
                 Player.setPosition(gridWidth / 2, gridHeight / 2);
                 Console.CursorVisible = false;
                 Console.SetWindowSize(gridWidth + 1, gridHeight + 3);
