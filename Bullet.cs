@@ -4,8 +4,8 @@ namespace console_bullet_hell
 {
     class Bullet
     {
-        public int x;
-        public int y;
+        public float x;
+        public float y;
         public float direction;
         private float speed;
         public Bullet(int x, int y)
@@ -13,8 +13,8 @@ namespace console_bullet_hell
             this.x = x;
             this.y = y;
             // Geschwindigkeit
-            float speed = 1.5f;//new Random().Next(1, 7);
-            // speed /= 10;
+            float speed = new Random().Next(1, 7);
+            speed /= 25;
             this.speed = speed;
             // Richtung zum Spieler
             float xDiff = Player.getX() - x;
@@ -22,22 +22,26 @@ namespace console_bullet_hell
             this.direction = MathF.Atan2(yDiff, xDiff) * 180.0f / MathF.PI;
 
         }
-        public void Move(){
+        public void Move()
+        {
             float dir = (MathF.PI / 180) * this.direction;
-            this.x += (int)(this.speed * MathF.Cos(dir));
-            this.y += (int)(this.speed * MathF.Sin(dir));
-            Console.Write("\r" + direction);
-            if(this.x > Program.gridWidth - 2){
+            this.x += (this.speed * MathF.Cos(dir));
+            this.y += (this.speed * MathF.Sin(dir));
+            // flew out of bounds
+            if (this.x > Program.gridWidth - 2 || this.x < 2)
+            {
                 Program.bullets.Remove(this);
+                Program.dodgedBullets++;
             }
-            else if(this.x < 2){
+            if (this.y > Program.gridHeight - 2 || this.y < 2)
+            {
                 Program.bullets.Remove(this);
+                Program.dodgedBullets++;
             }
-            if (this.y < 2){
-                Program.bullets.Remove(this);
-            }
-            else if(this.y > Program.gridHeight - 2){
-                Program.bullets.Remove(this);
+            // hit Player
+            if (this.x <= Player.getX() + 2 && this.x >= Player.getX() - 2 && this.y <= Player.getY() + 1 && this.y >= Player.getY() - 1)
+            {
+                Program.running = false;
             }
         }
     }

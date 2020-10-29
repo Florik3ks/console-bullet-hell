@@ -9,10 +9,11 @@ namespace console_bullet_hell
         public static int gridHeight = 44;
         public static int gridWidth = 121;
         public static List<Bullet> bullets;
-        private static bool running;
+        public static bool running;
+        public static int dodgedBullets;
         private static int speed = 1;
         private static int spawnTimer;
-        private static int spawnTimerCooldown = 100;
+        private static int spawnTimerCooldown = 50;
         private static Cell[,] grid = new Cell[gridHeight, gridWidth];
         static void Main(string[] args)
         {
@@ -20,14 +21,18 @@ namespace console_bullet_hell
         }
         static void Start()
         {
-            Player.setPosition(gridWidth / 2, gridHeight / 2);
-            Console.CursorVisible = false;
-            Console.SetWindowSize(gridWidth + 1, gridHeight + 3);
-            running = true;
-            bullets = new List<Bullet>();
-            spawnTimer = 0;
-            createGrid();
-            Game();
+            while (true)
+            {
+                Player.setPosition(gridWidth / 2, gridHeight / 2);
+                Console.CursorVisible = false;
+                Console.SetWindowSize(gridWidth + 1, gridHeight + 3);
+                running = true;
+                bullets = new List<Bullet>();
+                spawnTimer = 0;
+                dodgedBullets = 0;
+                createGrid();
+                Game();
+            }
         }
         static void Game()
         {
@@ -45,6 +50,11 @@ namespace console_bullet_hell
                 }
                 Thread.Sleep(speed * 1);
             }
+            Console.SetCursorPosition(gridWidth / 2, gridHeight / 2);
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine("PRESS ENTER");
+            Console.ReadLine();
+            Console.ResetColor();
         }
         static void spawnBullet()
         {
@@ -127,7 +137,7 @@ namespace console_bullet_hell
             for (int i = bullets.Count - 1; i >= 0; i--)
             {
                 Bullet b = bullets[i];
-                grid[b.y, b.x].Set("o");
+                grid[(int)b.y, (int)b.x].Set("o");
                 b.Move();
             }
         }
@@ -135,6 +145,11 @@ namespace console_bullet_hell
         {
             Console.SetCursorPosition(0, 0);
             printGrid();
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Write("Dodged bullets: ");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(dodgedBullets);
+            Console.ResetColor();
         }
         static void printGrid()
         {
