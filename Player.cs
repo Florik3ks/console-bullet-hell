@@ -1,3 +1,6 @@
+using System;
+using System.Windows;
+
 namespace console_bullet_hell
 {
     public static class Player
@@ -8,6 +11,7 @@ namespace console_bullet_hell
             {'╚','═','╩','═','╝'}};
         private static int x;
         private static int y;
+        
         public static void setPosition(int x, int y)
         {
             Player.x = x;

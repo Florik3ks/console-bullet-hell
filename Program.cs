@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Threading;
+using System.Collections.Generic;
 
 namespace console_bullet_hell
 {
-    class Program
+    static class Program
     {
+        public static int gridHeight = 44;
+        public static int gridWidth = 121;
+        public static List<Bullet> bullets;
         private static bool running;
-        private static int gridHeight = 30;
-        private static int gridWidth = 121;
         private static int speed = 1;
+        private static int spawnTimer;
+        private static int spawnTimerCooldown = 100;
         private static Cell[,] grid = new Cell[gridHeight, gridWidth];
         static void Main(string[] args)
         {
@@ -20,6 +24,8 @@ namespace console_bullet_hell
             Console.CursorVisible = false;
             Console.SetWindowSize(gridWidth + 1, gridHeight + 3);
             running = true;
+            bullets = new List<Bullet>();
+            spawnTimer = 0;
             createGrid();
             Game();
         }
@@ -29,9 +35,44 @@ namespace console_bullet_hell
             {
                 input();
                 updatePlayer();
+                updateBullets();
                 updateScreen();
+                spawnTimer--;
+                if (spawnTimer <= 0)
+                {
+                    spawnTimer = spawnTimerCooldown;
+                    spawnBullet();
+                }
                 Thread.Sleep(speed * 1);
             }
+        }
+        static void spawnBullet()
+        {
+            int x;
+            int y;
+            Random rand = new Random();
+            int r = rand.Next(0,3);
+            if (r == 0){
+                // oben
+                y = 2;
+                x = rand.Next(2, gridWidth - 2);
+            }
+            else if (r == 1){
+                // unten
+                x = rand.Next(2, gridWidth - 2);
+                y = gridHeight - 2;
+            }
+            else if(r == 2){
+                //links
+                x = 2;
+                y = rand.Next(2, gridHeight - 2);
+            }
+            else{
+                // rechts
+                x = gridWidth - 2;
+                y = rand.Next(2, gridHeight - 2);
+            }
+            bullets.Add(new Bullet(x, y));
         }
         static void input()
         {
@@ -76,8 +117,18 @@ namespace console_bullet_hell
             {
                 for (int x = -2; x < 3; x++)
                 {
-                    grid[Player.getY() + y, Player.getX() + x].Set(Player.sprite[y + 1,x + 2].ToString());
+                    grid[Player.getY() + y, Player.getX() + x].Set(Player.sprite[y + 1, x + 2].ToString());
                 }
+            }
+        }
+        static void updateBullets()
+        {
+            // foreach(Bullet b in bullets){
+            for (int i = bullets.Count - 1; i >= 0; i--)
+            {
+                Bullet b = bullets[i];
+                grid[b.y, b.x].Set("o");
+                b.Move();
             }
         }
         static void updateScreen()
