@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RootNamespace>console_jump_n_run</RootNamespace>
+    <RootNamespace>console_bullet_hell</RootNamespace>
   </PropertyGroup>
 
 </Project>
